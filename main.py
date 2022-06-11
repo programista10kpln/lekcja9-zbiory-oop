@@ -124,4 +124,85 @@ print(Bombas.hejka())
 print(Femoid.humor())
 print(Ania.humor())
 
+print('\n')
+
+
 # metody klasy do tworzenia nowych obiektów z nazwy klasy lub już powstałych, a metody statyczne do wywołania z nazwy klasy lub już powstałych obiektów
+class KontoBankowe:
+    __stan = 0
+
+    @property
+    def stan_konta(self):
+        return self.__stan
+
+    @stan_konta.getter
+    def stan_konta(self):
+        return self.__stan
+
+    @stan_konta.setter
+    def stan_konta(self, kasa):
+        self.__stan += kasa
+
+    def __neg__(self, kasa):
+        return -kasa
+
+
+rachunek = KontoBankowe()
+
+
+def wybierz(prompt, type=int):
+    while True:
+        try:
+            wejscie = type(input(f'{prompt}\n'))
+            break
+        except ValueError:
+            print('zła wartość\n')
+            continue
+    return wejscie
+
+
+def bankomat():
+    print('Witaj w bankomacie naszej firmy!\n')
+    while True:
+        print('Pokaż stan konta [1]')
+        print('Wypłacić gotówkę [2]')
+        print('Wpłacić gotówkę [3]')
+        print('Zakończyć [0]\n')
+        wybor = wybierz('Co chcesz zrobić?')
+        if wybor == 1:
+            print(f'Masz na koncie {rachunek.stan_konta} zł\n')
+            continue
+        elif wybor == 2:
+            if rachunek.stan_konta > 0:
+                kasa = wybierz('Ile?')
+                if rachunek.stan_konta > kasa:
+                    rachunek.stan_konta = -kasa
+                    print(f'Pomyślnie wypłacono {kasa} zł\n')
+                else:
+                    wyplata_decyzja = wybierz(
+                        f'Nie masz tyle na koncie! Możesz wypłacić maksymalnie {rachunek.stan_konta} zł. Czy chcesz to zrobić? [tak] lub [nie]',
+                        str).lower()
+                    if wyplata_decyzja == 'tak':
+                        kasa = rachunek.stan_konta
+                        rachunek.stan_konta = -kasa
+                        print(f'Pomyślnie wypłacono {kasa} zł\n')
+                    elif wyplata_decyzja == 'nie':
+                        print('anulowano operację\n')
+                continue
+            else:
+                print('Nie masz nic na koncie!\n')
+                continue
+        elif wybor == 3:
+            kasa = wybierz('Ile?')
+            rachunek.stan_konta = kasa
+            print(f'Pomyślnie wpłacono {kasa} zł\n')
+            continue
+        elif wybor == 0:
+            print('Do widzenia!')
+            break
+        else:
+            print('zła wartość\n')
+            continue
+
+
+bankomat()
